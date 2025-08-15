@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 import pytest
 
 # Корректное добавление пути к src
@@ -35,6 +36,17 @@ def test_account_masking() -> None:
     assert get_mask_account("12345678901234567890") == "**7890"
 
 
+def test_account_card_formatting() -> None:
+    """Тест форматирования карт/счетов."""
+    result = mask_account_card("Visa Platinum 7000792289606361")
+    assert result == "Visa Platinum 7000 79** **** 6361"
+
+
+def test_date_formatting() -> None:
+    """Тест форматирования дат."""
+    assert get_date("2018-07-11T02:26:18.671407") == "11.07.2018"
+
+
 def test_state_filtering(test_transactions: List[Dict[str, Any]]) -> None:
     """Тест фильтрации по состоянию."""
     executed = filter_by_state(test_transactions)
@@ -46,6 +58,18 @@ def test_state_filtering(test_transactions: List[Dict[str, Any]]) -> None:
     assert canceled[0]["id"] == 2
 
 
+def test_date_sorting(test_transactions: List[Dict[str, Any]]) -> None:
+    """Тест сортировки по дате."""
+    sorted_desc = sort_by_date(test_transactions)
+    assert sorted_desc[0]["id"] == 3
+    assert sorted_desc[-1]["id"] == 4
+
+
+def test_invalid_card_numbers() -> None:
+    """Тест невалидных номеров карт."""
+    with pytest.raises(ValueError):
+        get_mask_card_number("123")
+
 
 def test_invalid_account_numbers() -> None:
     """Тест невалидных номеров счетов."""
@@ -53,3 +77,6 @@ def test_invalid_account_numbers() -> None:
         get_mask_account("123")
 
 
+def test_empty_data_handling() -> None:
+    """Тест обработки пустых данных."""
+    assert filter_by_state([]) == []
