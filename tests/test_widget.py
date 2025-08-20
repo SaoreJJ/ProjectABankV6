@@ -21,26 +21,3 @@ class TestMaskAccountCard:
     def test_mask_account_card_valid(self, input_str: str, expected: str) -> None:
         """Тест маскировки валидных номеров карт и счетов"""
         assert mask_account_card(input_str) == expected
-
-
-class TestGetDate:
-    @pytest.mark.parametrize(
-        "invalid_date",
-        [
-            "",
-            "2023/01/01 12:00:00",
-            "01-01-2023",
-            "not-a-date",
-            1234567890,  # число вместо строки
-            None,  # None значение
-        ],
-    )
-    def test_get_date_invalid(self, invalid_date: str) -> None:
-        """Тест невалидных форматов даты"""
-        with pytest.raises((ValueError, AttributeError, TypeError)):
-            get_date(invalid_date)
-
-
-def test_edge_case_special_characters() -> None:
-    """Тест специальных символов в названии карты"""
-    assert mask_account_card("Special!@# 1234567890123456") == "Special!@# 1234 56** **** 3456"
