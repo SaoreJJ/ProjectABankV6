@@ -23,6 +23,7 @@ def load_transactions(file_path: str) -> List[Dict[str, Any]]:
         List[Dict[str, Any]]: Список транзакций или пустой список при ошибке
     """
     try:
+        utils_logger.debug(f"Запрос на загрузку транзакций из: {file_path}")
         utils_logger.info(f"Начало загрузки транзакций из файла: {file_path}")
 
         # Проверяем существует ли файл
@@ -33,7 +34,9 @@ def load_transactions(file_path: str) -> List[Dict[str, Any]]:
             return []
 
         # Проверяем не пустой ли файл
-        if os.path.getsize(file_path) == 0:
+        file_size = os.path.getsize(file_path)
+        utils_logger.debug(f"Размер файла: {file_size} байт")
+        if file_size == 0:
             error_msg = "Файл пустой"
             utils_logger.warning(error_msg)
             print(error_msg)
@@ -42,6 +45,7 @@ def load_transactions(file_path: str) -> List[Dict[str, Any]]:
         # Открываем файл и читаем данные
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
+        utils_logger.debug(f"Прочитано данных из файла: {len(data) if isinstance(data, list) else 'не список'}")
 
         # Проверяем что данные - это список
         if not isinstance(data, list):
@@ -52,6 +56,7 @@ def load_transactions(file_path: str) -> List[Dict[str, Any]]:
 
         # Фильтруем пустые словари
         valid_transactions = [tx for tx in data if isinstance(tx, dict) and tx]
+        utils_logger.debug(f"После фильтрации осталось {len(valid_transactions)} валидных транзакций")
 
         utils_logger.info(f"Успешно загружено {len(valid_transactions)} транзакций")
         print(f"Загружено {len(valid_transactions)} транзакций")
@@ -67,11 +72,4 @@ def load_transactions(file_path: str) -> List[Dict[str, Any]]:
         utils_logger.exception(error_msg)
         print(error_msg)
         return []
-
-
-# Пример использования
-if __name__ == "__main__":
-    # Тестирование функции
-    transactions = load_transactions("../data/operations.json")
-    print(f"Загружено транзакций: {len(transactions)}")
 

@@ -24,14 +24,14 @@ def setup_logger(name: str, log_file: str) -> logging.Logger:
 
     # Создаем логгер
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)  # Изменено с INFO на DEBUG
 
     # Очищаем существующие обработчики (чтобы избежать дублирования)
     logger.handlers.clear()
 
     # Создаем файловый обработчик с ПЕРЕЗАПИСЬЮ при каждом запуске (mode='w')
     file_handler = logging.FileHandler(log_path, mode='w', encoding='utf-8')
-    file_handler.setLevel(logging.INFO)
+    file_handler.setLevel(logging.DEBUG)  # Изменено с INFO на DEBUG
 
     # Форматтер для логов: время - модуль - уровень - сообщение
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
